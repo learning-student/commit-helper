@@ -25,9 +25,18 @@ def get_changelog(dir: str = '.', since: str | None = None, until: str = 'HEAD')
                 changelog[group] = {}
 
             if type not in changelog[group]:
-                changelog[group][type] = []
+                changelog[group][type] = {
+                    "all_commits": [],
+                    "execute_commands": [],
+                    "added_environments": [],
+                    "changed_environments": []
+                }
 
-            changelog[group][type] = [*changelog[group][type], change]
+            changelog[group][type]['all_commits'] = [*changelog[group][type]['all_commits'], change['metadata']['title'] + change['metadata']['message']]
+            changelog[group][type]['execute_commands'] = [*changelog[group][type]['execute_commands'], *change['execute_commands']]
+            changelog[group][type]['added_environments'] = [*changelog[group][type]['added_environments'], *change['added_environments']]
+            changelog[group][type]['changed_environments'] = [*changelog[group][type]['changed_environments'], *change['changed_environments']]
+
 
     typer.echo(json.dumps(changelog))
 
